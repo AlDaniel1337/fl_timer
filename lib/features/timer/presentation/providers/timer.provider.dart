@@ -26,7 +26,7 @@ class TimerNotifier extends Notifier<TimerState> {
     
     // Inicia un Timer periódico que se ejecuta cada segundo
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      state = state.copyWith(segundos: state.segundos + 1);
+      state = state.copyWith(seconds: state.seconds + 1);
     });
   }
 
@@ -40,25 +40,25 @@ class TimerNotifier extends Notifier<TimerState> {
   void reset() {
     _timer?.cancel();
     state = TimerState.initial().copyWith(
-      opacidadFondo: state.opacidadFondo, // Conservamos la opacidad que eligió el usuario
+      backgroundOpacity: state.backgroundOpacity, // Conservamos la opacidad que eligió el usuario
     );
   }
 
   /// Incrementa el contador de clics/vueltas en +1
   void incrementCounter() {
-    state = state.copyWith(contador: state.contador + 1);
+    state = state.copyWith(counter: state.counter + 1);
   }
 
   /// Decrementa el contador de clics/vueltas en -1, asegurando que no sea negativo
   void decrementCounter() {
-    if (state.contador > 0) {
-      state = state.copyWith(contador: state.contador - 1);
+    if (state.counter > 0) {
+      state = state.copyWith(counter: state.counter - 1);
     }
   }
 
   /// Actualiza la opacidad del fondo de manera dinámica (ej. desde un Slider)
   void changeOpacity(double newOpacity) {
-    state = state.copyWith(opacidadFondo: newOpacity.clamp(0.0, 1.0));
+    state = state.copyWith(backgroundOpacity: newOpacity.clamp(0.0, 1.0));
   }
 }
 

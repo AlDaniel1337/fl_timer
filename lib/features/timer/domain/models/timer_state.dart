@@ -1,38 +1,38 @@
 class TimerState {
-  final int segundos;
-  final int contador;
+  final int seconds;
+  final int counter;
   final bool isRunning;
-  final double opacidadFondo;
+  final double backgroundOpacity;
 
   const TimerState({
-    required this.segundos,
-    required this.contador,
+    required this.seconds,
+    required this.counter,
     required this.isRunning,
-    required this.opacidadFondo,
+    required this.backgroundOpacity,
   });
 
   /// Estado inicial por defecto cuando la aplicación se abre
   factory TimerState.initial() {
     return const TimerState(
-      segundos: 0,
-      contador: 0,
+      seconds: 0,
+      counter: 0,
       isRunning: false,
-      opacidadFondo: 1.0, // Totalmente opaco por defecto
+      backgroundOpacity: 1.0, // Totalmente opaco por defecto
     );
   }
 
   /// Permite modificar una o varias propiedades creando un nuevo objeto estable
   TimerState copyWith({
-    int? segundos,
-    int? contador,
+    int? seconds,
+    int? counter,
     bool? isRunning,
-    double? opacidadFondo,
+    double? backgroundOpacity,
   }) {
     return TimerState(
-      segundos: segundos ?? this.segundos,
-      contador: contador ?? this.contador,
+      seconds: seconds ?? this.seconds,
+      counter: counter ?? this.counter,
       isRunning: isRunning ?? this.isRunning,
-      opacidadFondo: opacidadFondo ?? this.opacidadFondo,
+      backgroundOpacity: backgroundOpacity ?? this.backgroundOpacity,
     );
   }
 }
