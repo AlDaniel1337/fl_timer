@@ -49,6 +49,13 @@ class TimerNotifier extends Notifier<TimerState> {
     state = state.copyWith(contador: state.contador + 1);
   }
 
+  /// Decrementa el contador de clics/vueltas en -1, asegurando que no sea negativo
+  void decrementCounter() {
+    if (state.contador > 0) {
+      state = state.copyWith(contador: state.contador - 1);
+    }
+  }
+
   /// Actualiza la opacidad del fondo de manera dinámica (ej. desde un Slider)
   void changeOpacity(double newOpacity) {
     state = state.copyWith(opacidadFondo: newOpacity.clamp(0.0, 1.0));
