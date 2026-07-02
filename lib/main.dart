@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:timer/core/theme/app_theme.dart';
 import 'package:timer/features/timer/presentation/pages/timer.page.dart';
+import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  // Inicializar el windowManager
+  await windowManager.ensureInitialized();
+  
+  // Configuración de la ventana
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(230, 220), // Tamaño de la ventana
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.hidden, // Ocultar la barra de título
+    alwaysOnTop: true, // Mantener la ventana siempre encima
+  );
+  
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
+
   runApp(const MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
