@@ -12,6 +12,7 @@ void main() async {
   // Configuración de la ventana
   WindowOptions windowOptions = const WindowOptions(
     size: Size(230, 220), // Tamaño de la ventana
+    minimumSize: Size(230, 220), // Tamaño mínimo de la ventana
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
