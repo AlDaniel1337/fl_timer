@@ -2,12 +2,14 @@ class TimerState {
   final int seconds;
   final int counter;
   final bool isRunning;
+  final bool hasFinished;
   final double backgroundOpacity;
 
   const TimerState({
     required this.seconds,
     required this.counter,
     required this.isRunning,
+    required this.hasFinished,
     required this.backgroundOpacity,
   });
 
@@ -17,6 +19,7 @@ class TimerState {
       seconds: 0,
       counter: 0,
       isRunning: false,
+      hasFinished: false,
       backgroundOpacity: 1.0, // Totalmente opaco por defecto
     );
   }
@@ -26,12 +29,14 @@ class TimerState {
     int? seconds,
     int? counter,
     bool? isRunning,
+    bool? hasFinished,
     double? backgroundOpacity,
   }) {
     return TimerState(
       seconds: seconds ?? this.seconds,
       counter: counter ?? this.counter,
       isRunning: isRunning ?? this.isRunning,
+      hasFinished: hasFinished ?? this.hasFinished,
       backgroundOpacity: backgroundOpacity ?? this.backgroundOpacity,
     );
   }
