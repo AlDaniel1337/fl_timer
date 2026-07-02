@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timer/core/theme/app_theme.dart';
 import 'package:timer/features/timer/presentation/pages/timer.page.dart';
 import 'package:window_manager/window_manager.dart';
@@ -25,7 +26,9 @@ void main() async {
     await windowManager.focus();
   });
 
-  runApp(const MyApp());
+  runApp(
+    ProviderScope(child: const MyApp())
+  );
 }
 
 
