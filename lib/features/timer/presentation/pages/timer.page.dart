@@ -7,7 +7,6 @@ import 'package:timer/features/timer/presentation/widgets/widgets.index.dart';
 import 'package:timer/services/window.service.dart';
 import 'package:timer/shared/custom_app_bar.dart';
 import 'package:timer/utils/time_formatter.dart';
-import 'package:window_manager/window_manager.dart';
 
 class TimerPage extends ConsumerWidget {
    
