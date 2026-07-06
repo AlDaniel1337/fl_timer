@@ -39,15 +39,17 @@ class TimerPage extends ConsumerWidget {
       PanelIconButton(
         onPressed: () => windowNotifier.toggleSize(),
         icon: isExpanded ? Icons.fullscreen_exit : Icons.open_in_full,
+        extraSize: isExpanded ? 8 : 0,
       ),
       PanelIconButton(
         onPressed: () => isRunning ? timerNotifier.pause() : timerNotifier.start(),
-        icon: isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
-        extraSize: 14.0,
+        icon: isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,        
+        extraSize: isExpanded ? 20 : 14,
       ),
       PanelIconButton(
         onPressed: () => timerNotifier.reset(),
-        icon: Icons.restore_outlined
+        icon: Icons.restore_outlined,
+        extraSize: isExpanded ? 8 : 0,
       )
     ];
 
