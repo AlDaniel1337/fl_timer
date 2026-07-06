@@ -5,12 +5,11 @@ class AppTheme {
   //: Paleta de colores base para el estilo oscuro
   // verde/teal brillante del botón +1 e iniciar
   static const Color primaryTeal = Color(0xFF00BFA5); 
-  // El coral para el botón de pausa/reset
-  static const Color accentCoral = Color(0xFFFF5252); 
   // El negro más profundo para las tarjetas fijas
   static const Color surfaceCard = Color(0xFF121212); 
   // El blanco limpio para texto e iconos
-  static const Color textLight = Colors.white;        
+  static const Color textLight = Colors.white;   
+  static const Color timerEndedColor = Colors.cyan;    
 
   /// Genera el color de fondo principal aplicando un nivel de opacidad.
   /// [opacity] debe ser un valor entre 0.0 (completamente transparente) y 1.0 (completamente opaco).
