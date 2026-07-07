@@ -6,7 +6,7 @@ class WindowService {
 
   // Tamaño de la ventana en modo compacto y expandido
   static const Size sizeCompacto = Size(200, 190);
-  static const Size sizeExpandido = Size(260, 280); 
+  static const Size sizeExpandido = Size(240, 280); 
 
   /// Configuración e Inicialización de la ventana
   static Future<void> initialize() async {
