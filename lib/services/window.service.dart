@@ -5,35 +5,39 @@ import 'package:window_manager/window_manager.dart';
 class WindowService {
 
   // Tamaño de la ventana en modo compacto y expandido
-  static const Size sizeCompacto = Size(200, 190);
-  static const Size sizeExpandido = Size(240, 280); 
+  static const Size sizeCompacto = Size(180, 180);
+  static const Size sizeExpandido = Size(220, 270); 
+
+
 
   /// Configuración e Inicialización de la ventana
   static Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
     await windowManager.ensureInitialized();
+    
+    await windowManager.setMaximizable(false);
 
     WindowOptions windowOptions = const WindowOptions(
       size: sizeExpandido,
-      // Dejamos el mínimo un poco más bajo para evitar que el S.O. bloquee el redimensionamiento
       minimumSize: sizeCompacto, 
       maximumSize: sizeExpandido,
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
-      titleBarStyle: TitleBarStyle.hidden, // Ocultar barra de título
-      alwaysOnTop: true, // Siempre encima
+      titleBarStyle: TitleBarStyle.hidden,
+      alwaysOnTop: true,
       title: 'Timer',
-      
-      
     );
 
     await windowManager.waitUntilReadyToShow(windowOptions, () async {
       await windowManager.setMaximizable(false);
+      await windowManager.setAsFrameless();
       await windowManager.show();
       await windowManager.focus();
     });
   }
+
+
 
   /// Método interno para alternar el tamaño de la ventana
   static Future<void> resizeWindow(bool expand) async {
