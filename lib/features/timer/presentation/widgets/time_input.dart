@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:timer/utils/zero_prefix_formatter.dart';
 
 class TimeInput extends StatefulWidget {
   final int value;
@@ -130,6 +131,8 @@ class _TextField extends StatelessWidget {
         inputFormatters: [
           // Limita la entrada a solo dígitos
           FilteringTextInputFormatter.digitsOnly,
+          // Formateador personalizado
+          ZeroPrefixFormatter(), 
         ],
         decoration: const InputDecoration(
           border: InputBorder.none,

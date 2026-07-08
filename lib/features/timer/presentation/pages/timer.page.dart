@@ -143,7 +143,7 @@ class _NewTimeControllers extends StatelessWidget {
               horas: value,
               segundos: currentTimer % 60
             );
-          }
+          },
         ),
         const SizedBox(width: 8.0),
         TimeInput(
