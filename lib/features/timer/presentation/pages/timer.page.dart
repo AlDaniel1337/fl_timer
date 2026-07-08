@@ -16,7 +16,9 @@ class TimerPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 
     //: Variables del estado de la ventana
-    final isExpanded = ref.watch(windowProvider);
+    final windowState = ref.watch(windowProvider);
+    final isExpanded  = windowState == WindowSizeState.expanded;
+    final isMini      = windowState == WindowSizeState.mini;
     final windowNotifier = ref.read(windowProvider.notifier);
 
     //: Variables del estado del temporizador
@@ -37,7 +39,9 @@ class TimerPage extends ConsumerWidget {
     //: Botones del panel de control
     List<PanelIconButton> panelButtons = [
       PanelIconButton(
-        onPressed: () => windowNotifier.toggleSize(),
+        onPressed: () => windowNotifier.setWindowState(
+          isExpanded ? WindowSizeState.compact : WindowSizeState.expanded
+        ),
         icon: isExpanded ? Icons.fullscreen_exit : Icons.open_in_full,
         extraSize: isExpanded ? 8 : 0,
       ),
@@ -74,6 +78,7 @@ class TimerPage extends ConsumerWidget {
                     ClockDisplay(
                       tiempo: tiempoFormateado,
                       hasFinished: hasFinished,
+                      isMini: isMini,
                     ),
 
                     if(isExpanded)
@@ -85,15 +90,21 @@ class TimerPage extends ConsumerWidget {
                       SizedBox(height: 10.0),
                     ],
 
-                    ControlPanel(panelButtons: panelButtons),
+                    ControlPanel(
+                      panelButtons: panelButtons,
+                      isMini: isMini,
+                    ),
 
                     if(isExpanded) SizedBox(height: 10.0),              
                     
+                    if(!isMini)
                     CounterPanel(
                       currentCount: counter,
                       onIncrement: () => timerNotifier.incrementCounter(),
                       onDecrement: () => timerNotifier.decrementCounter(),
-                      onReset: isExpanded ? () => timerNotifier.resetCounter() : null,
+                      onReset: () => timerNotifier.resetCounter(),
+                      onMiniCounterPressed: () => windowNotifier.setWindowState(WindowSizeState.mini),
+                      showExtraControls: isExpanded,
                     ),
                 
                   ],

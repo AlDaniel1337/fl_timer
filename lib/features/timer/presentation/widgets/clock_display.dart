@@ -7,11 +7,13 @@ class ClockDisplay extends StatelessWidget {
 
   final String tiempo;
   final bool hasFinished;
+  final bool isMini;
    
   const ClockDisplay({
     super.key,
     required this.tiempo,
     this.hasFinished = false,
+    this.isMini = false,
   });
   
   @override
@@ -23,7 +25,7 @@ class ClockDisplay extends StatelessWidget {
           tiempo, 
           style: TextStyle(
             color: !hasFinished ? AppTheme.textLight : AppTheme.timerEndedColor,
-            fontSize: AppTextSize.big,
+            fontSize: isMini ? AppTextSize.large : AppTextSize.big,
             fontWeight: FontWeight.w500
             ),
         ),

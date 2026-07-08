@@ -6,9 +6,12 @@ import 'package:timer/features/timer/domain/models/panel_icon_button.dart';
 class ControlPanel extends StatelessWidget {
 
   final List<PanelIconButton> panelButtons;
+  final bool isMini;
    
   const ControlPanel({
-    super.key, this.panelButtons = const []
+    super.key, 
+    this.panelButtons = const [],
+    this.isMini = false
   });
   
   @override
@@ -20,7 +23,9 @@ class ControlPanel extends StatelessWidget {
         onPressed: button.onPressed,
         icon: Icon(button.icon),
         color: AppTheme.textLight,
-        iconSize: AppIconSize.medium + button.extraSize
+        iconSize: isMini 
+          ? AppIconSize.small + button.extraSize 
+          : AppIconSize.medium + button.extraSize
       )).toList()
     );
   }

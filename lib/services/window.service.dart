@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:window_manager/window_manager.dart';
 
+enum WindowSizeState {
+  compact,
+  expanded,
+  mini
+}
+
 class WindowService {
 
   // Tamaño de la ventana en modo compacto y expandido
   static const Size sizeCompacto = Size(180, 180);
-  static const Size sizeExpandido = Size(220, 270); 
+  static const Size sizeExpandido = Size(220, 270);
+  static const Size miniSize = Size(140, 100);
 
 
 
@@ -40,13 +47,20 @@ class WindowService {
 
 
   /// Método interno para alternar el tamaño de la ventana
-  static Future<void> resizeWindow(bool expand) async {
-    if (expand) {
-      await windowManager.setMinimumSize(sizeExpandido);
-      await windowManager.setSize(sizeExpandido, animate: true);
-    } else {
-      await windowManager.setMinimumSize(sizeCompacto);
-      await windowManager.setSize(sizeCompacto, animate: true);
+  static Future<void> resizeWindow(WindowSizeState state) async {
+    switch (state) {
+      case WindowSizeState.expanded:
+        await windowManager.setMinimumSize(sizeExpandido);
+        await windowManager.setSize(sizeExpandido, animate: true);
+        break;
+      case WindowSizeState.mini:
+        await windowManager.setMinimumSize(miniSize);
+        await windowManager.setSize(miniSize, animate: true);
+        break;
+      case WindowSizeState.compact:
+        await windowManager.setMinimumSize(sizeCompacto);
+        await windowManager.setSize(sizeCompacto, animate: true);
+        break;
     }
   }
 }
@@ -54,20 +68,18 @@ class WindowService {
 
 
 /// CONTROLADOR DE ESTADO (RIVERPOD)
-/// Maneja si la ventana está expandida (true) o compacta (false)
-class WindowStateNotifier extends StateNotifier<bool> {
-  WindowStateNotifier() : super(true); // Inicia en modo expandido (true)
+/// Maneja si la ventana está expandida, compacta o en modo mini.
+class WindowStateNotifier extends StateNotifier<WindowSizeState> {
+  WindowStateNotifier() : super(WindowSizeState.expanded); // Inicia en modo expandido
 
-  Future<void> toggleSize() async {
-    final newState = !state;
+  /// Cambia el estado de la ventana
+  Future<void> setWindowState(WindowSizeState newState) async {
     state = newState;
-    
-    // Ejecuta el cambio físico en la ventana
-    await WindowService.resizeWindow(state);
+    await WindowService.resizeWindow(newState);
   }
 }
 
 // Proveedor global para usar en tus Widgets
-final windowProvider = StateNotifierProvider<WindowStateNotifier, bool>((ref) {
+final windowProvider = StateNotifierProvider<WindowStateNotifier, WindowSizeState>((ref) {
   return WindowStateNotifier();
 });
