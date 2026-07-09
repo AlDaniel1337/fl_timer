@@ -10,6 +10,7 @@ class AppTheme {
   // El blanco limpio para texto e iconos
   static const Color textLight = Colors.white;   
   static const Color timerEndedColor = Colors.cyan;    
+  static const Color functionActiveColor =  Color.fromARGB(255, 130, 215, 255);
 
   /// Genera el color de fondo principal aplicando un nivel de opacidad.
   /// [opacity] debe ser un valor entre 0.0 (completamente transparente) y 1.0 (completamente opaco).

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timer/core/theme/app_theme.dart';
 import 'package:timer/features/timer/presentation/pages/timer.page.dart';
-import 'package:timer/services/window.service.dart';
+import 'package:timer/services/window/window.service.dart';
 
 void main() async {
 

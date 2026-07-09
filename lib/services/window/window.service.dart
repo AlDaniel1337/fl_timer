@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:timer/services/window/window.state.dart';
 import 'package:window_manager/window_manager.dart';
-
-enum WindowSizeState {
-  compact,
-  expanded,
-  mini
-}
 
 class WindowService {
 
@@ -69,17 +64,24 @@ class WindowService {
 
 /// CONTROLADOR DE ESTADO (RIVERPOD)
 /// Maneja si la ventana está expandida, compacta o en modo mini.
-class WindowStateNotifier extends StateNotifier<WindowSizeState> {
-  WindowStateNotifier() : super(WindowSizeState.expanded); // Inicia en modo expandido
+class WindowStateNotifier extends StateNotifier<WindowState> {
+  WindowStateNotifier() : super(WindowState.initial()); // Inicia en modo expandido
 
   /// Cambia el estado de la ventana
   Future<void> setWindowState(WindowSizeState newState) async {
-    state = newState;
+    state = state.copyWith(windowSizeState: newState);
     await WindowService.resizeWindow(newState);
+  }
+
+  /// Cambia el estado de la ventana y si debe mostrar el mini contador
+  Future<void> setUseMiniCounter(bool useMiniCounter) async {
+    state = state.copyWith(
+      shouldChangeToMiniCounter: useMiniCounter,
+    );
   }
 }
 
 // Proveedor global para usar en tus Widgets
-final windowProvider = StateNotifierProvider<WindowStateNotifier, WindowSizeState>((ref) {
+final windowProvider = StateNotifierProvider<WindowStateNotifier, WindowState>((ref) {
   return WindowStateNotifier();
 });

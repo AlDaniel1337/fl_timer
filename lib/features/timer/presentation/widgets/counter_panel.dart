@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:timer/constants/app_sizes.dart';
+import 'package:timer/core/theme/app_theme.dart';
 
 class CounterPanel extends StatelessWidget {
 
@@ -8,6 +9,8 @@ class CounterPanel extends StatelessWidget {
   final VoidCallback? onIncrement;
   final VoidCallback? onDecrement;
   final VoidCallback? onReset;
+  final VoidCallback? onMiniCounterPressed;
+  final bool isMiniActive;
   final bool showExtraControls;
   
    
@@ -19,12 +22,29 @@ class CounterPanel extends StatelessWidget {
     this.onIncrement,
     this.onDecrement,
     this.onReset,
+    this.isMiniActive = false,
+    this.onMiniCounterPressed,
   });
   
   @override
   Widget build(BuildContext context) {
     return  Stack(
-      children: [       
+      children: [
+        
+        //: Botón mini contador
+        if(showExtraControls)
+        Positioned(
+          left: 10,
+          child: _ButtonContainer(
+            child: IconButton(
+              onPressed: onMiniCounterPressed,
+              icon: const Icon(Icons.photo_size_select_small_rounded),
+              iconSize: AppIconSize.small,
+              color: isMiniActive ? AppTheme.functionActiveColor : null,
+            ),
+          ),
+        ),
+        
 
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

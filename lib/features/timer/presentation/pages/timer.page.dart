@@ -4,7 +4,8 @@ import 'package:timer/core/theme/app_theme.dart';
 import 'package:timer/features/timer/domain/models/panel_icon_button.dart';
 import 'package:timer/features/timer/presentation/providers/timer.provider.dart';
 import 'package:timer/features/timer/presentation/widgets/widgets.index.dart';
-import 'package:timer/services/window.service.dart';
+import 'package:timer/services/window/window.service.dart';
+import 'package:timer/services/window/window.state.dart';
 import 'package:timer/shared/custom_app_bar.dart';
 import 'package:timer/utils/time_formatter.dart';
 
@@ -15,54 +16,66 @@ class TimerPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    //: Variables del estado de la ventana
-    final windowState = ref.watch(windowProvider);
-    final isExpanded  = windowState == WindowSizeState.expanded;
-    final isMini      = windowState == WindowSizeState.mini;
+    //: Variables del [estado] de la ventana
+    final windowState    = ref.watch(windowProvider);
     final windowNotifier = ref.read(windowProvider.notifier);
+    final isExpanded     = windowState.windowSizeState == WindowSizeState.expanded;
+    final isMini         = windowState.windowSizeState == WindowSizeState.mini;
+    final useMiniCounter = windowState.shouldChangeToMiniCounter;
 
-    //: Variables del estado del temporizador
-    // Variables que se obtienen del estado del temporizador usando Riverpod
-    final segundos   = ref.watch(timerProvider.select((s) => s.seconds));
-    final currentTimer = ref.watch(timerProvider.select((s) => s.currentTimer));
-    final isRunning  = ref.watch(timerProvider.select((s) => s.isRunning));
-    final counter    = ref.watch(timerProvider.select((s) => s.counter));
-    final hasFinished = ref.watch(timerProvider.select((s) => s.hasFinished));
-    
-    // Instancia del notifier para controlar el estado del temporizador
+    //: Variables del [estado] del temporizador
     final timerNotifier  = ref.read(timerProvider.notifier);
+    final segundos     = ref.watch(timerProvider.select((s) => s.seconds));
+    final currentTimer = ref.watch(timerProvider.select((s) => s.currentTimer));
+    final isRunning    = ref.watch(timerProvider.select((s) => s.isRunning));
+    final counter      = ref.watch(timerProvider.select((s) => s.counter));
+    final hasFinished  = ref.watch(timerProvider.select((s) => s.hasFinished));
+    
     // Formateo del tiempo en segundos a un formato legible
     final tiempoFormateado = TimeFormatter.formatSeconds(segundos);
+
+    //: Funciones
+    /// Cambia el tamaño de la ventana entre expandido y compacto
+    void toggleSize() {
+      windowNotifier.setWindowState(
+        isExpanded ? WindowSizeState.compact : WindowSizeState.expanded
+      );
+    }
+
+    /// Reinicia el temporizador
+    void resetTimer() {
+      timerNotifier.reset();
+      if(isExpanded) return;
+      windowNotifier.setWindowState(WindowSizeState.compact);
+    }
+
+    /// Inicia o pausa el temporizador
+    void playPauseTimer() async {
+      if (useMiniCounter && !isRunning) {
+        await windowNotifier.setWindowState(WindowSizeState.mini);
+      } else if (useMiniCounter && isRunning) {
+        await windowNotifier.setWindowState(WindowSizeState.compact);
+      }
+
+      isRunning ? timerNotifier.pause() : timerNotifier.start();
+    }
 
 
 
     //: Botones del panel de control
     List<PanelIconButton> panelButtons = [
       PanelIconButton(
-        onPressed: () => windowNotifier.setWindowState(
-          isExpanded ? WindowSizeState.compact : WindowSizeState.expanded
-        ),
+        onPressed: toggleSize,
         icon: isExpanded ? Icons.fullscreen_exit : Icons.open_in_full,
         extraSize: isExpanded ? 8 : 0,
       ),
       PanelIconButton(
-        onPressed: () async {
-          if( isRunning ) {
-            await windowNotifier.setWindowState(WindowSizeState.compact);
-            timerNotifier.pause();
-          } else {
-            await windowNotifier.setWindowState(WindowSizeState.mini);
-            timerNotifier.start();
-          }
-        },
+        onPressed: playPauseTimer,
         icon: isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,        
         extraSize: isExpanded ? 20 : 14,
       ),
       PanelIconButton(
-        onPressed: () async {
-          await windowNotifier.setWindowState(WindowSizeState.compact);
-          timerNotifier.reset();
-        },
+        onPressed: resetTimer,
         icon: Icons.restore_outlined,
         extraSize: isExpanded ? 8 : 0,
       )
@@ -114,6 +127,8 @@ class TimerPage extends ConsumerWidget {
                       onIncrement: () => timerNotifier.incrementCounter(),
                       onDecrement: () => timerNotifier.decrementCounter(),
                       onReset: () => timerNotifier.resetCounter(),
+                      onMiniCounterPressed: () => windowNotifier.setUseMiniCounter(!useMiniCounter),
+                      isMiniActive: useMiniCounter,
                       showExtraControls: isExpanded,
                     ),
                 
