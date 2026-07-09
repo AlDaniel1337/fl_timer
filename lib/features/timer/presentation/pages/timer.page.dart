@@ -46,12 +46,23 @@ class TimerPage extends ConsumerWidget {
         extraSize: isExpanded ? 8 : 0,
       ),
       PanelIconButton(
-        onPressed: () => isRunning ? timerNotifier.pause() : timerNotifier.start(),
+        onPressed: () async {
+          if( isRunning ) {
+            await windowNotifier.setWindowState(WindowSizeState.compact);
+            timerNotifier.pause();
+          } else {
+            await windowNotifier.setWindowState(WindowSizeState.mini);
+            timerNotifier.start();
+          }
+        },
         icon: isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,        
         extraSize: isExpanded ? 20 : 14,
       ),
       PanelIconButton(
-        onPressed: () => timerNotifier.reset(),
+        onPressed: () async {
+          await windowNotifier.setWindowState(WindowSizeState.compact);
+          timerNotifier.reset();
+        },
         icon: Icons.restore_outlined,
         extraSize: isExpanded ? 8 : 0,
       )
@@ -103,7 +114,6 @@ class TimerPage extends ConsumerWidget {
                       onIncrement: () => timerNotifier.incrementCounter(),
                       onDecrement: () => timerNotifier.decrementCounter(),
                       onReset: () => timerNotifier.resetCounter(),
-                      onMiniCounterPressed: () => windowNotifier.setWindowState(WindowSizeState.mini),
                       showExtraControls: isExpanded,
                     ),
                 
