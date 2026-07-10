@@ -26,7 +26,7 @@ class TimerState {
       counterLimit: 0,
       isRunning: false,
       hasFinished: false,
-      backgroundOpacity: 1.0, // Totalmente opaco por defecto
+      backgroundOpacity: 0.80, // Totalmente opaco por defecto
     );
   }
 

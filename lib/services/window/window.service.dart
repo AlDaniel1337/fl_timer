@@ -6,8 +6,9 @@ import 'package:window_manager/window_manager.dart';
 class WindowService {
 
   // Tamaño de la ventana en modo compacto y expandido
-  static const Size sizeCompacto = Size(180, 180);
-  static const Size sizeExpandido = Size(220, 270);
+  static const Size sizeConpact = Size(180, 180);
+  static const Size sizeExpanded = Size(220, 270);
+  static const Size sizeOpacity  = Size(220, 330);
   static const Size miniSize = Size(140, 100);
 
 
@@ -20,9 +21,9 @@ class WindowService {
     await windowManager.setMaximizable(false);
 
     WindowOptions windowOptions = const WindowOptions(
-      size: sizeExpandido,
-      minimumSize: sizeCompacto, 
-      maximumSize: sizeExpandido,
+      size: sizeExpanded,
+      minimumSize: sizeConpact, 
+      maximumSize: sizeExpanded,
       center: true,
       backgroundColor: Colors.transparent,
       skipTaskbar: false,
@@ -42,19 +43,22 @@ class WindowService {
 
 
   /// Método interno para alternar el tamaño de la ventana
-  static Future<void> resizeWindow(WindowSizeState state) async {
+  static Future<void> resizeWindow(WindowSizeState state, bool? showOpacitySlider) async {
     switch (state) {
       case WindowSizeState.expanded:
-        await windowManager.setMinimumSize(sizeExpandido);
-        await windowManager.setSize(sizeExpandido, animate: true);
+        await windowManager.setMinimumSize( showOpacitySlider == true ? sizeOpacity : sizeExpanded);
+        await windowManager.setSize(
+          showOpacitySlider == true ? sizeOpacity : sizeExpanded, 
+          animate: true
+        );
         break;
       case WindowSizeState.mini:
         await windowManager.setMinimumSize(miniSize);
         await windowManager.setSize(miniSize, animate: true);
         break;
       case WindowSizeState.compact:
-        await windowManager.setMinimumSize(sizeCompacto);
-        await windowManager.setSize(sizeCompacto, animate: true);
+        await windowManager.setMinimumSize(sizeConpact);
+        await windowManager.setSize(sizeConpact, animate: true);
         break;
     }
   }
@@ -70,7 +74,7 @@ class WindowStateNotifier extends StateNotifier<WindowState> {
   /// Cambia el estado de la ventana
   Future<void> setWindowState(WindowSizeState newState) async {
     state = state.copyWith(windowSizeState: newState);
-    await WindowService.resizeWindow(newState);
+    await WindowService.resizeWindow(newState, state.showOpacitySlider);
   }
 
   /// Cambia el estado de la ventana y si debe mostrar el mini contador
@@ -78,6 +82,14 @@ class WindowStateNotifier extends StateNotifier<WindowState> {
     state = state.copyWith(
       shouldChangeToMiniCounter: useMiniCounter,
     );
+  }
+
+  /// Cambia el estado de la ventana y si debe mostrar el control de opacidad
+  Future<void> setShowOpacitySlider(bool show) async {
+    state = state.copyWith(
+      showOpacitySlider: show,
+    );
+    await WindowService.resizeWindow(state.windowSizeState, state.showOpacitySlider);
   }
 }
 

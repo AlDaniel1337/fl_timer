@@ -9,12 +9,15 @@ enum WindowSizeState {
 
 ///: Clase que representa el estado de la ventana, incluyendo su tamaño y si debe cambiar a un mini contador.
 class WindowState {
+
   final WindowSizeState windowSizeState;
   final bool shouldChangeToMiniCounter;
+  final bool showOpacitySlider;
 
   const WindowState({
     required this.windowSizeState,
     required this.shouldChangeToMiniCounter,
+    required this.showOpacitySlider,
   });
 
   /// Estado inicial por defecto cuando la aplicación se abre
@@ -22,6 +25,7 @@ class WindowState {
     return const WindowState(
       windowSizeState: WindowSizeState.expanded,
       shouldChangeToMiniCounter: false,
+      showOpacitySlider: false,
     );
   }
 
@@ -29,10 +33,12 @@ class WindowState {
   WindowState copyWith({
     WindowSizeState? windowSizeState,
     bool? shouldChangeToMiniCounter,
+    bool? showOpacitySlider,
   }) {
     return WindowState(
       windowSizeState: windowSizeState ?? this.windowSizeState,
       shouldChangeToMiniCounter: shouldChangeToMiniCounter ?? this.shouldChangeToMiniCounter,
+      showOpacitySlider: showOpacitySlider ?? this.showOpacitySlider,
     );
   }
 }
