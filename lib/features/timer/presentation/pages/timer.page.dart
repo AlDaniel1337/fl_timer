@@ -26,16 +26,16 @@ class TimerPage extends ConsumerWidget {
     final showOpacitySlider = windowState.showOpacitySlider;
 
     //: Variables del [estado] del temporizador
-    final timerNotifier  = ref.read(timerProvider.notifier);
-    final segundos     = ref.watch(timerProvider.select((s) => s.seconds));
-    final currentTimer = ref.watch(timerProvider.select((s) => s.currentTimer));
-    final isRunning    = ref.watch(timerProvider.select((s) => s.isRunning));
-    final counter      = ref.watch(timerProvider.select((s) => s.counter));
-    final hasFinished  = ref.watch(timerProvider.select((s) => s.hasFinished));
-    final backgroundOpacity = ref.watch(timerProvider.select((s) => s.backgroundOpacity));
+    final timerNotifier      = ref.read(timerProvider.notifier);
+    final totalTimeInSeconds = ref.watch(timerProvider.select((s) => s.totalTimeInSeconds));
+    final currentTimerTime   = ref.watch(timerProvider.select((s) => s.currentTimerTime));
+    final isTimerRunning     = ref.watch(timerProvider.select((s) => s.isTimerRunning));
+    final timerCounter       = ref.watch(timerProvider.select((s) => s.timerCounter));
+    final hasTimerFinished   = ref.watch(timerProvider.select((s) => s.hasTimerFinished));
+    final backgroundOpacity  = ref.watch(timerProvider.select((s) => s.backgroundOpacity));
     
     // Formateo del tiempo en segundos a un formato legible
-    final tiempoFormateado = TimeFormatter.formatSeconds(segundos);
+    final tiempoFormateado = TimeFormatter.formatSeconds(totalTimeInSeconds);
 
     //: Funciones
     /// Cambia el tamaño de la ventana entre expandido y compacto
@@ -54,13 +54,13 @@ class TimerPage extends ConsumerWidget {
 
     /// Inicia o pausa el temporizador
     void playPauseTimer() async {
-      isRunning ? timerNotifier.pause() : timerNotifier.start();
+      isTimerRunning ? timerNotifier.pause() : timerNotifier.start();
 
       if(isExpanded) return;
 
-      if (useMiniCounter && !isRunning) {
+      if (useMiniCounter && !isTimerRunning) {
         await windowNotifier.setWindowState(WindowSizeState.mini);
-      } else if (useMiniCounter && isRunning) {
+      } else if (useMiniCounter && isTimerRunning) {
         await windowNotifier.setWindowState(WindowSizeState.compact);
       }
     }
@@ -76,7 +76,7 @@ class TimerPage extends ConsumerWidget {
       ),
       PanelIconButton(
         onPressed: playPauseTimer,
-        icon: isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,        
+        icon: isTimerRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,        
         extraSize: isExpanded ? 20 : 14,
       ),
       PanelIconButton(
@@ -134,14 +134,14 @@ class TimerPage extends ConsumerWidget {
                   children: [
                     ClockDisplay(
                       tiempo: tiempoFormateado,
-                      hasFinished: hasFinished,
+                      hasFinished: hasTimerFinished,
                       isMini: isMini,
                     ),
 
                     if(isExpanded)
                     ...[
                       _NewTimeControllers(
-                        currentTimer: currentTimer, 
+                        currentTimer: currentTimerTime, 
                         timerNotifier: timerNotifier
                       ),
                       SizedBox(height: 10.0),
@@ -156,7 +156,7 @@ class TimerPage extends ConsumerWidget {
                     
                     if(!isMini)
                     CounterPanel(
-                      currentCount: counter,
+                      currentCount: timerCounter,
                       onIncrement: () => timerNotifier.incrementCounter(),
                       onDecrement: () => timerNotifier.decrementCounter(),
                       onReset: () => timerNotifier.resetCounter(),

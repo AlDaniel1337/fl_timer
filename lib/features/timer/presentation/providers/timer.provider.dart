@@ -27,24 +27,24 @@ class TimerNotifier extends Notifier<TimerState> {
   void start() {
     
     // Evita duplicar si ya está corriendo
-    if (state.isRunning) return; 
+    if (state.isTimerRunning) return; 
 
-    state = state.copyWith(isRunning: true);
+    state = state.copyWith(isTimerRunning: true);
 
     // Inicia un Timer periódico que se ejecuta cada segundo
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state.hasFinished) {
-        state = state.copyWith(seconds: state.seconds + 1);
+      if (state.hasTimerFinished) {
+        state = state.copyWith(totalTimeInSeconds: state.totalTimeInSeconds + 1);
       }
       else {
-        state = state.copyWith(seconds: state.seconds - 1);
+        state = state.copyWith(totalTimeInSeconds: state.totalTimeInSeconds - 1);
         
         // Si el tiempo llega a cero, marcamos que ha terminado
-        if (state.seconds <= 0) {
+        if (state.totalTimeInSeconds <= 0) {
           _reproducirAlarma();
           state = state.copyWith(
-            hasFinished: true,
-            counter: state.counter + 1
+            hasTimerFinished: true,
+            timerCounter: state.timerCounter + 1
           );
         }
       }
@@ -56,7 +56,7 @@ class TimerNotifier extends Notifier<TimerState> {
   ///: Pausa el cronómetro deteniendo el Timer activo
   void pause() {
     _timer?.cancel();
-    state = state.copyWith(isRunning: false);
+    state = state.copyWith(isTimerRunning: false);
   }
 
 
@@ -67,9 +67,9 @@ class TimerNotifier extends Notifier<TimerState> {
     state = TimerState.initial().copyWith(
       // Conservamos la opacidad que eligió el usuario
       backgroundOpacity: state.backgroundOpacity, 
-      seconds: state.currentTimer,
-      currentTimer: state.currentTimer,
-      counter: state.counter,
+      totalTimeInSeconds: state.currentTimerTime,
+      currentTimerTime: state.currentTimerTime,
+      timerCounter: state.timerCounter,
     );
   }
 
@@ -78,11 +78,11 @@ class TimerNotifier extends Notifier<TimerState> {
   ///: Prepara el temporizador para un nuevo tiempo.
   void updateTiempo({int? horas, int? minutos, int? segundos}) {
     // Calculamos el nuevo total de segundos basándonos en lo que recibimos
-    final h = horas ?? (state.seconds ~/ 3600);
-    final m = minutos ?? ((state.seconds % 3600) ~/ 60);
-    final s = segundos ?? (state.seconds % 60);
+    final h = horas ?? (state.totalTimeInSeconds ~/ 3600);
+    final m = minutos ?? ((state.totalTimeInSeconds % 3600) ~/ 60);
+    final s = segundos ?? (state.totalTimeInSeconds % 60);
     
-    state = state.copyWith(currentTimer: (h * 3600) + (m * 60) + s);
+    state = state.copyWith(currentTimerTime: (h * 3600) + (m * 60) + s);
   }
   //!+ Fin temporizador
 
@@ -91,14 +91,14 @@ class TimerNotifier extends Notifier<TimerState> {
   //+ Contador de clics/vueltas
   ///: Incrementa el contador de clics/vueltas en +1
   void incrementCounter() {
-    state = state.copyWith(counter: state.counter + 1);
+    state = state.copyWith(timerCounter: state.timerCounter + 1);
   }
 
 
   ///: Decrementa el contador de clics/vueltas en -1, asegurando que no sea negativo
   void decrementCounter() {
-    if (state.counter > 0) {
-      state = state.copyWith(counter: state.counter - 1);
+    if (state.timerCounter > 0) {
+      state = state.copyWith(timerCounter: state.timerCounter - 1);
     }
   }
 
@@ -106,7 +106,7 @@ class TimerNotifier extends Notifier<TimerState> {
 
   ///: Restablece el contador de clics/vueltas a cero
   void resetCounter() {
-    state = state.copyWith(counter: 0);
+    state = state.copyWith(timerCounter: 0);
   }
   //!+ Fin contador de clics/vueltas
 

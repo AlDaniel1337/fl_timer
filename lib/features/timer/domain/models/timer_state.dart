@@ -1,53 +1,52 @@
 class TimerState {
-  final int seconds;
-  final int currentTimer;
-  final int counter;
+  final int totalTimeInSeconds;
+  final int currentTimerTime;
+  final int timerCounter;
   final int counterLimit;
-  final bool isRunning;
-  final bool hasFinished;
+  final bool isTimerRunning;
+  final bool hasTimerFinished;
   final double backgroundOpacity;
 
   const TimerState({
-    required this.seconds,
-    required this.currentTimer,
-    required this.counter,
+    required this.totalTimeInSeconds,
+    required this.currentTimerTime,
+    required this.timerCounter,
     required this.counterLimit,
-    required this.isRunning,
-    required this.hasFinished,
+    required this.isTimerRunning,
+    required this.hasTimerFinished,
     required this.backgroundOpacity,
   });
 
   /// Estado inicial por defecto cuando la aplicación se abre
   factory TimerState.initial() {
     return const TimerState(
-      seconds: 0,
-      currentTimer: 0,
-      counter: 0,
+      totalTimeInSeconds: 0,
+      currentTimerTime: 0,
+      timerCounter: 0,
       counterLimit: 0,
-      isRunning: false,
-      hasFinished: false,
+      isTimerRunning: false,
+      hasTimerFinished: false,
       backgroundOpacity: 0.80, // Totalmente opaco por defecto
     );
   }
 
   /// Permite modificar una o varias propiedades creando un nuevo objeto estable
   TimerState copyWith({
-    int? seconds,
-    int? currentTimer,
-    int? counter,
+    int? totalTimeInSeconds,
+    int? currentTimerTime,
+    int? timerCounter,
     int? counterLimit,
-    bool? isRunning,
-    bool? hasFinished,
-    bool? isExpanded,
+    bool? isTimerRunning,
+    bool? hasTimerFinished,
     double? backgroundOpacity,
   }) {
     return TimerState(
-      seconds: seconds ?? this.seconds,
-      currentTimer: currentTimer ?? this.currentTimer,
-      counter: counter ?? this.counter,
+      totalTimeInSeconds: totalTimeInSeconds ?? this.totalTimeInSeconds,
+      currentTimerTime: currentTimerTime ?? this.currentTimerTime,
+      timerCounter: timerCounter ?? this.timerCounter,
       counterLimit: counterLimit ?? this.counterLimit,
-      isRunning: isRunning ?? this.isRunning,
-      hasFinished: hasFinished ?? this.hasFinished,
+      isTimerRunning: isTimerRunning ?? this.isTimerRunning,
+      hasTimerFinished: hasTimerFinished ?? this.hasTimerFinished,
       backgroundOpacity: backgroundOpacity ?? this.backgroundOpacity,
     );
   }
