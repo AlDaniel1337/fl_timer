@@ -40,21 +40,27 @@ class TimerPage extends ConsumerWidget {
 
 
 
-    //: Controles de selección de temporizador (principal o secundario)
+    //: Controles del appbar
     List<Widget> configButtons = [
       IconButton(
         onPressed: () => controller.windowNotifier.setShowOpacitySlider(!controller.showOpacitySlider),
         icon: const Icon(Icons.opacity, color: Colors.white, size: 18),
       ),
-      TextButton(
-        onPressed: (){}, 
-        child: Text(
-          'Auxiliar', 
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold
-          ),
+      IconButton(
+        onPressed: (){},
+        icon: const Icon(
+          // Icons.filter_2_outlined,
+          Icons.filter_1_outlined,
+          color: Colors.white, 
+          size: 18
+        ),
+      ),
+      IconButton(
+        onPressed: () => controller.toggleUseCounter(),
+        icon: Icon(
+          Icons.timer_off_outlined,
+          color: controller.isCounterEnabled ? Colors.white : AppTheme.functionActiveColor,
+          size: 18
         ),
       ),
     ];
@@ -70,7 +76,8 @@ class TimerPage extends ConsumerWidget {
           color: AppTheme.getBackgroundColor(0),
           child: Column(
             children: [
-
+              
+              //: AppBar personalizada con botones de configuración
               if(controller.isExpanded)
               CustomAppBar( actions: configButtons ),
 
@@ -99,14 +106,14 @@ class TimerPage extends ConsumerWidget {
                       SizedBox(height: 10.0),
                     ],
 
-                    ControlPanel(
+                    TimerControlPanel(
                       panelButtons: panelButtons,
                       isMini: controller.isMini,
                     ),
 
                     if(controller.isExpanded) SizedBox(height: 10.0),
                     
-                    if(!controller.isMini)
+                    if(controller.shouldShowCounterControl())
                     CounterPanel(
                       currentCount: controller.timerCounter,
                       onIncrement: () => controller.timerNotifier.incrementCounter(),

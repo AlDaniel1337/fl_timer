@@ -5,10 +5,11 @@ import 'package:window_manager/window_manager.dart';
 
 class WindowService {
 
-  // Tamaño de la ventana en modo compacto y expandido
-  static const Size sizeConpact = Size(180, 180);
-  static const Size sizeExpanded = Size(220, 270);
-  static const Size sizeOpacity  = Size(220, 330);
+  //: Tamaños de la ventana en modo compacto y expandido
+  static const Size sizeCompact = Size(180, 170);
+  static const Size sizeCompactWithoutCounter = Size(180, 150);
+  static const Size sizeExpanded = Size(250, 270);
+  static const Size sizeOpacity  = Size(250, 330);
   static const Size miniSize = Size(140, 100);
 
 
@@ -22,7 +23,7 @@ class WindowService {
 
     WindowOptions windowOptions = const WindowOptions(
       size: sizeExpanded,
-      minimumSize: sizeConpact, 
+      minimumSize: sizeCompact, 
       maximumSize: sizeExpanded,
       center: true,
       backgroundColor: Colors.transparent,
@@ -57,9 +58,12 @@ class WindowService {
         await windowManager.setSize(miniSize, animate: true);
         break;
       case WindowSizeState.compact:
-        await windowManager.setMinimumSize(sizeConpact);
-        await windowManager.setSize(sizeConpact, animate: true);
+        await windowManager.setMinimumSize(sizeCompact);
+        await windowManager.setSize(sizeCompact, animate: true);
         break;
+      case WindowSizeState.compactWithoutCounter:
+        await windowManager.setMinimumSize(sizeCompactWithoutCounter);
+        await windowManager.setSize(sizeCompactWithoutCounter, animate: true);
     }
   }
 }

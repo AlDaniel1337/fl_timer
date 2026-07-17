@@ -44,7 +44,9 @@ class TimerNotifier extends Notifier<TimerState> {
           _reproducirAlarma();
           state = state.copyWith(
             hasTimerFinished: true,
-            timerCounter: state.timerCounter + 1
+            timerCounter: state.isCounterEnabled 
+              ? state.timerCounter + 1 
+              : state.timerCounter
           );
         }
       }
@@ -60,7 +62,6 @@ class TimerNotifier extends Notifier<TimerState> {
   }
 
 
-
   ///: Restablece el temporizador a su estado inicial
   void reset() {
     _timer?.cancel();
@@ -72,7 +73,6 @@ class TimerNotifier extends Notifier<TimerState> {
       timerCounter: state.timerCounter,
     );
   }
-
 
 
   ///: Prepara el temporizador para un nuevo tiempo.
@@ -88,7 +88,7 @@ class TimerNotifier extends Notifier<TimerState> {
 
 
 
-  //+ Contador de clics/vueltas
+  //+ Contador
   ///: Incrementa el contador de clics/vueltas en +1
   void incrementCounter() {
     state = state.copyWith(timerCounter: state.timerCounter + 1);
@@ -103,10 +103,15 @@ class TimerNotifier extends Notifier<TimerState> {
   }
 
 
-
   ///: Restablece el contador de clics/vueltas a cero
   void resetCounter() {
     state = state.copyWith(timerCounter: 0);
+  }
+
+
+  ///: Activar / desactivar el uso del contador de clics/vueltas
+  void toggleUseCounter() {
+    state = state.copyWith(isCounterEnabled: !state.isCounterEnabled);
   }
   //!+ Fin contador de clics/vueltas
 

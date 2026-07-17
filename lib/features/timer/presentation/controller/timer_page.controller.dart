@@ -21,6 +21,7 @@ class TimerPageController {
   late int currentTimerTime;
   late bool isTimerRunning;
   late int timerCounter;
+  late bool isCounterEnabled;
   late bool hasTimerFinished;
   late double backgroundOpacity;
   
@@ -46,6 +47,7 @@ class TimerPageController {
     currentTimerTime   = ref.watch(timerProvider.select((s) => s.currentTimerTime));
     isTimerRunning     = ref.watch(timerProvider.select((s) => s.isTimerRunning));
     timerCounter       = ref.watch(timerProvider.select((s) => s.timerCounter));
+    isCounterEnabled   = ref.watch(timerProvider.select((s) => s.isCounterEnabled));
     hasTimerFinished   = ref.watch(timerProvider.select((s) => s.hasTimerFinished));
     backgroundOpacity  = ref.watch(timerProvider.select((s) => s.backgroundOpacity));
 
@@ -57,10 +59,17 @@ class TimerPageController {
   //+ Funciones
   ///: Cambia el tamaño de la ventana entre expandido y compacto
   void toggleSize() {
+
+
     windowNotifier.setWindowState(
-      isExpanded ? WindowSizeState.compact : WindowSizeState.expanded,
+      isExpanded 
+      ? !isCounterEnabled 
+        ? WindowSizeState.compactWithoutCounter 
+        : WindowSizeState.compact
+      : WindowSizeState.expanded,
     );
   }
+
 
   ///: Reinicia el temporizador
   void resetTimer() {
@@ -68,6 +77,7 @@ class TimerPageController {
     if(isExpanded) return;
     windowNotifier.setWindowState(WindowSizeState.compact);
   }
+
 
   ///: Inicia o pausa el temporizador
   void playPauseTimer() async {
@@ -80,6 +90,20 @@ class TimerPageController {
     } else if (useMiniCounter && isTimerRunning) {
       await windowNotifier.setWindowState(WindowSizeState.compact);
     }
+  }
+
+
+  ///: Activa o desactiva el uso del contador de clics/vueltoas
+  void toggleUseCounter() => timerNotifier.toggleUseCounter();
+
+
+  ///: Mostrat u ocultar el control del contador
+  bool shouldShowCounterControl() {
+
+    if(isMini) return false;
+    if(!isCounterEnabled && !isExpanded) return false;
+
+    return true;
   }
   //!+ Fin funciones
 }

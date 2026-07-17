@@ -2,7 +2,8 @@
 enum WindowSizeState {
   compact,
   expanded,
-  mini
+  mini,
+  compactWithoutCounter,
 }
 
 

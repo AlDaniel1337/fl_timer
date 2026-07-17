@@ -3,6 +3,7 @@ class TimerState {
   final int currentTimerTime;
   final int timerCounter;
   final int counterLimit;
+  final bool isCounterEnabled;
   final bool isTimerRunning;
   final bool hasTimerFinished;
   final double backgroundOpacity;
@@ -12,6 +13,7 @@ class TimerState {
     required this.currentTimerTime,
     required this.timerCounter,
     required this.counterLimit,
+    required this.isCounterEnabled,
     required this.isTimerRunning,
     required this.hasTimerFinished,
     required this.backgroundOpacity,
@@ -24,6 +26,7 @@ class TimerState {
       currentTimerTime: 0,
       timerCounter: 0,
       counterLimit: 0,
+      isCounterEnabled: true,
       isTimerRunning: false,
       hasTimerFinished: false,
       backgroundOpacity: 0.80, // Totalmente opaco por defecto
@@ -36,6 +39,7 @@ class TimerState {
     int? currentTimerTime,
     int? timerCounter,
     int? counterLimit,
+    bool? isCounterEnabled,
     bool? isTimerRunning,
     bool? hasTimerFinished,
     double? backgroundOpacity,
@@ -45,6 +49,7 @@ class TimerState {
       currentTimerTime: currentTimerTime ?? this.currentTimerTime,
       timerCounter: timerCounter ?? this.timerCounter,
       counterLimit: counterLimit ?? this.counterLimit,
+      isCounterEnabled: isCounterEnabled ?? this.isCounterEnabled,
       isTimerRunning: isTimerRunning ?? this.isTimerRunning,
       hasTimerFinished: hasTimerFinished ?? this.hasTimerFinished,
       backgroundOpacity: backgroundOpacity ?? this.backgroundOpacity,

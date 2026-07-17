@@ -3,12 +3,12 @@ import 'package:timer/constants/app_sizes.dart';
 import 'package:timer/core/theme/app_theme.dart';
 import 'package:timer/features/timer/domain/models/panel_icon_button.dart';
 
-class ControlPanel extends StatelessWidget {
+class TimerControlPanel extends StatelessWidget {
 
   final List<PanelIconButton> panelButtons;
   final bool isMini;
    
-  const ControlPanel({
+  const TimerControlPanel({
     super.key, 
     this.panelButtons = const [],
     this.isMini = false
