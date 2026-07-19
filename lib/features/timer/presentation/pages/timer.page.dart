@@ -15,7 +15,9 @@ class TimerPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
 
-    final TimerPageController controller = TimerPageController(ref);
+    final TimerPageController controller = TimerPageController(
+      ref: ref,
+    );
 
 
 
@@ -47,11 +49,12 @@ class TimerPage extends ConsumerWidget {
         icon: const Icon(Icons.opacity, color: Colors.white, size: 18),
       ),
       IconButton(
-        onPressed: (){},
-        icon: const Icon(
-          // Icons.filter_2_outlined,
-          Icons.filter_1_outlined,
-          color: Colors.white, 
+        onPressed: () => controller.timerNotifier.switchTimer(controller.currentTimerIndex == 0 ? 1 : 0),
+        icon: Icon(
+          controller.currentTimerIndex == 0 
+            ? Icons.filter_1_outlined 
+            : Icons.filter_2_outlined,
+          color: controller.currentTimerIndex == 0 ? Colors.white : AppTheme.functionActiveColor,
           size: 18
         ),
       ),
@@ -72,63 +75,81 @@ class TimerPage extends ConsumerWidget {
       borderRadius: BorderRadius.circular(20.0),
       child: Scaffold(
         backgroundColor: AppTheme.getBackgroundColor(controller.backgroundOpacity),
-        body: Container(
-          color: AppTheme.getBackgroundColor(0),
-          child: Column(
-            children: [
-              
-              //: AppBar personalizada con botones de configuración
-              if(controller.isExpanded)
-              CustomAppBar( actions: configButtons ),
+        body: Stack(
+          children: [
+            Container(
+              padding: controller.isExpanded ? EdgeInsets.zero : EdgeInsets.only(top: 10.0),
+              color: AppTheme.getBackgroundColor(0),
+              child: Column(
+                children: [
+                  
+                  //: AppBar personalizada con botones de configuración
+                  if(controller.isExpanded)
+                  CustomAppBar( actions: configButtons ),
 
-              if(controller.isExpanded && controller.showOpacitySlider)
-              OpacitySlider(
-                backgroundOpacity: controller.backgroundOpacity,
-                onChanged: (value) => controller.timerNotifier.changeOpacity(value),
-              ),
-              
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: controller.isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
-                  children: [
-                    ClockDisplay(
-                      tiempo: controller.tiempoFormateado,
-                      hasFinished: controller.hasTimerFinished,
-                      isMini: controller.isMini,
-                    ),
+                  //: Control del slider de opacidad
+                  if(controller.isExpanded && controller.showOpacitySlider)
+                  OpacitySlider(
+                    backgroundOpacity: controller.backgroundOpacity,
+                    onChanged: (value) => controller.timerNotifier.changeOpacity(value),
+                  ),
+                  
 
-                    if(controller.isExpanded)
-                    ...[
-                      _NewTimeControllers(
-                        currentTimer: controller.currentTimerTime, 
-                        timerNotifier: controller.timerNotifier
-                      ),
-                      SizedBox(height: 10.0),
-                    ],
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: controller.isExpanded ? MainAxisAlignment.start : MainAxisAlignment.center,
+                      children: [
 
-                    TimerControlPanel(
-                      panelButtons: panelButtons,
-                      isMini: controller.isMini,
-                    ),
+                        //: Reloj principal del temporizador
+                        ClockDisplay(
+                          tiempo: controller.tiempoFormateado,
+                          hasFinished: controller.hasTimerFinished,
+                          isMini: controller.isMini,
+                        ),
 
-                    if(controller.isExpanded) SizedBox(height: 10.0),
+                        //: Controles de tiempo (horas, minutos, segundos) solo visibles en modo expandido
+                        if(controller.isExpanded)
+                        ...[
+                          _NewTimeControllers(
+                            currentTimer: controller.currentTimerTime, 
+                            timerNotifier: controller.timerNotifier
+                          ),
+                          SizedBox(height: 10.0),
+                        ],
+
+                        //: Panel de botones del temporizador
+                        TimerControlPanel(
+                          panelButtons: panelButtons,
+                          isMini: controller.isMini,
+                        ),
+            
+                        if(controller.isExpanded) SizedBox(height: 10.0),
+                        
+                        //: Panel de control del contador, solo visible si el contador está habilitado
+                        if(controller.shouldShowCounterControl())
+                        CounterPanel(
+                          currentCount: controller.timerCounter,
+                          onIncrement: () => controller.timerNotifier.incrementCounter(),
+                          onDecrement: () => controller.timerNotifier.decrementCounter(),
+                          onReset: () => controller.timerNotifier.resetCounter(),
+                          onMiniCounterPressed: () => controller.windowNotifier.setUseMiniCounter(!controller.useMiniCounter),
+                          isMiniActive: controller.useMiniCounter,
+                          showExtraControls: controller.isExpanded,
+                        ),
                     
-                    if(controller.shouldShowCounterControl())
-                    CounterPanel(
-                      currentCount: controller.timerCounter,
-                      onIncrement: () => controller.timerNotifier.incrementCounter(),
-                      onDecrement: () => controller.timerNotifier.decrementCounter(),
-                      onReset: () => controller.timerNotifier.resetCounter(),
-                      onMiniCounterPressed: () => controller.windowNotifier.setUseMiniCounter(!controller.useMiniCounter),
-                      isMiniActive: controller.useMiniCounter,
-                      showExtraControls: controller.isExpanded,
+                      ],
                     ),
-                
-                  ],
-                ),
-              ),              
-            ],
-          ),
+                  ),              
+                ],
+              ),
+            ),
+
+            if(controller.shouldShowSecondTimerControl())
+            ChangeTimerButton(
+              currentTimerIndex: controller.currentTimerIndex,
+              onPressed: () => controller.timerNotifier.switchTimer(controller.currentTimerIndex == 0 ? 1 : 0),
+            ),
+          ],
         )
       ),
     );

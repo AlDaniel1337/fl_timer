@@ -7,6 +7,8 @@ class TimerState {
   final bool isTimerRunning;
   final bool hasTimerFinished;
   final double backgroundOpacity;
+  final List<int> timesInSeconds;
+  final int currentTimerIndex;
 
   const TimerState({
     required this.totalTimeInSeconds,
@@ -17,6 +19,8 @@ class TimerState {
     required this.isTimerRunning,
     required this.hasTimerFinished,
     required this.backgroundOpacity,
+    this.timesInSeconds = const [0, 0],
+    this.currentTimerIndex = 0,
   });
 
   /// Estado inicial por defecto cuando la aplicación se abre
@@ -30,6 +34,8 @@ class TimerState {
       isTimerRunning: false,
       hasTimerFinished: false,
       backgroundOpacity: 0.80, // Totalmente opaco por defecto
+      timesInSeconds: [0, 0],
+      currentTimerIndex: 0,
     );
   }
 
@@ -43,6 +49,8 @@ class TimerState {
     bool? isTimerRunning,
     bool? hasTimerFinished,
     double? backgroundOpacity,
+    List<int>? timesInSeconds,
+    int? currentTimerIndex,
   }) {
     return TimerState(
       totalTimeInSeconds: totalTimeInSeconds ?? this.totalTimeInSeconds,
@@ -53,6 +61,8 @@ class TimerState {
       isTimerRunning: isTimerRunning ?? this.isTimerRunning,
       hasTimerFinished: hasTimerFinished ?? this.hasTimerFinished,
       backgroundOpacity: backgroundOpacity ?? this.backgroundOpacity,
+      timesInSeconds: timesInSeconds ?? this.timesInSeconds,
+      currentTimerIndex: currentTimerIndex ?? this.currentTimerIndex,
     );
   }
 }

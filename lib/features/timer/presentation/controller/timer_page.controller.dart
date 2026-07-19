@@ -24,7 +24,8 @@ class TimerPageController {
   late bool isCounterEnabled;
   late bool hasTimerFinished;
   late double backgroundOpacity;
-  
+  late int currentTimerIndex;
+  late int secondTimerTime;
   // Formateo del tiempo en segundos a un formato legible
   late String tiempoFormateado;
 
@@ -34,7 +35,9 @@ class TimerPageController {
 
 
   //: Constructor
-  TimerPageController(this.ref) {
+  TimerPageController({
+    required this.ref,
+  }) {
     windowState    = ref.watch(windowProvider);
     windowNotifier = ref.read(windowProvider.notifier);
     isExpanded     = windowState.windowSizeState == WindowSizeState.expanded;
@@ -50,6 +53,8 @@ class TimerPageController {
     isCounterEnabled   = ref.watch(timerProvider.select((s) => s.isCounterEnabled));
     hasTimerFinished   = ref.watch(timerProvider.select((s) => s.hasTimerFinished));
     backgroundOpacity  = ref.watch(timerProvider.select((s) => s.backgroundOpacity));
+    currentTimerIndex  = ref.watch(timerProvider.select((s) => s.currentTimerIndex));
+    secondTimerTime    = ref.watch(timerProvider.select((s) => s.timesInSeconds[1]));
 
     tiempoFormateado = TimeFormatter.formatSeconds(totalTimeInSeconds);
   }
@@ -59,8 +64,6 @@ class TimerPageController {
   //+ Funciones
   ///: Cambia el tamaño de la ventana entre expandido y compacto
   void toggleSize() {
-
-
     windowNotifier.setWindowState(
       isExpanded 
       ? !isCounterEnabled 
@@ -93,7 +96,12 @@ class TimerPageController {
   }
 
 
-  ///: Activa o desactiva el uso del contador de clics/vueltoas
+  ///: Cambia el temporizador seleccionado (1, 2)
+  void switchTimer(int timerNumber) => timerNotifier.switchTimer(timerNumber);
+  
+
+
+  ///: Activa o desactiva el uso del contador de clics/vueltas
   void toggleUseCounter() => timerNotifier.toggleUseCounter();
 
 
@@ -102,6 +110,17 @@ class TimerPageController {
 
     if(isMini) return false;
     if(!isCounterEnabled && !isExpanded) return false;
+
+    return true;
+  }
+
+
+  ///: Mostrar u ocultar el control del segundo temporizador
+  bool shouldShowSecondTimerControl() {
+    if(isMini) return false;
+    if(isExpanded) return false;
+
+    if(secondTimerTime == 0) return false;
 
     return true;
   }

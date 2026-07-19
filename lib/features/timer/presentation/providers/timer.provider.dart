@@ -44,7 +44,7 @@ class TimerNotifier extends Notifier<TimerState> {
           _reproducirAlarma();
           state = state.copyWith(
             hasTimerFinished: true,
-            timerCounter: state.isCounterEnabled 
+            timerCounter: (state.isCounterEnabled && state.currentTimerIndex == 0)
               ? state.timerCounter + 1 
               : state.timerCounter
           );
@@ -71,6 +71,9 @@ class TimerNotifier extends Notifier<TimerState> {
       totalTimeInSeconds: state.currentTimerTime,
       currentTimerTime: state.currentTimerTime,
       timerCounter: state.timerCounter,
+      isCounterEnabled: state.isCounterEnabled,
+      timesInSeconds: state.timesInSeconds,
+      currentTimerIndex: state.currentTimerIndex,
     );
   }
 
@@ -82,7 +85,29 @@ class TimerNotifier extends Notifier<TimerState> {
     final m = minutos ?? ((state.totalTimeInSeconds % 3600) ~/ 60);
     final s = segundos ?? (state.totalTimeInSeconds % 60);
     
-    state = state.copyWith(currentTimerTime: (h * 3600) + (m * 60) + s);
+    state = state.copyWith(
+      currentTimerTime: (h * 3600) + (m * 60) + s,
+      timesInSeconds: state.timesInSeconds.asMap().entries.map((entry) {
+        // Revisar si el indice del temporizador actual coincide con el índice del entry, si es así, actualizamos el tiempo, si no, dejamos el valor anterior
+        return entry.key == state.currentTimerIndex 
+          ? (h * 3600) + (m * 60) + s 
+          : entry.value;
+      }).toList(),
+    );
+  }
+
+
+
+  ///: Cambia entre los temporizadores disponibles (1, 2)
+  void switchTimer(int timerNumber) {
+    if (timerNumber != 0 && timerNumber != 1) return;
+
+    state = state.copyWith(
+      currentTimerIndex: timerNumber,
+      totalTimeInSeconds: state.timesInSeconds[timerNumber],
+      currentTimerTime: state.timesInSeconds[timerNumber],
+      hasTimerFinished: false,
+    );
   }
   //!+ Fin temporizador
 
