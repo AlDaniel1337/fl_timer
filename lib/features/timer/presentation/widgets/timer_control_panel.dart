@@ -21,6 +21,7 @@ class TimerControlPanel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: panelButtons.map((button) => IconButton(
         onPressed: button.onPressed,
+        onLongPress: button.onLongPress,
         icon: Icon(button.icon),
         color: AppTheme.textLight,
         iconSize: isMini 

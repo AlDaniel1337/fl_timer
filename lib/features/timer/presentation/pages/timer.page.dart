@@ -20,8 +20,7 @@ class TimerPage extends ConsumerWidget {
     );
 
 
-
-    //: Control del temporizador
+    //: Termporizador: controles / botones
     List<PanelIconButton> panelButtons = [
       PanelIconButton(
         onPressed: controller.toggleSize,
@@ -35,6 +34,7 @@ class TimerPage extends ConsumerWidget {
       ),
       PanelIconButton(
         onPressed: controller.resetTimer,
+        onLongPress: controller.timerNotifier.resetCounter,
         icon: Icons.restore_outlined,
         extraSize: controller.isExpanded ? 8 : 0,
       )
@@ -42,11 +42,15 @@ class TimerPage extends ConsumerWidget {
 
 
 
-    //: Controles del appbar
+    //: AppBar: botones
     List<Widget> configButtons = [
       IconButton(
-        onPressed: () => controller.windowNotifier.setShowOpacitySlider(!controller.showOpacitySlider),
-        icon: const Icon(Icons.opacity, color: Colors.white, size: 18),
+        onPressed: () => controller.toggleUseCounter(),
+        icon: Icon(
+          Icons.timer_off_outlined,
+          color: controller.isCounterEnabled ? Colors.white : AppTheme.functionActiveColor,
+          size: 18
+        ),
       ),
       IconButton(
         onPressed: () => controller.timerNotifier.switchTimer(controller.currentTimerIndex == 0 ? 1 : 0),
@@ -59,12 +63,8 @@ class TimerPage extends ConsumerWidget {
         ),
       ),
       IconButton(
-        onPressed: () => controller.toggleUseCounter(),
-        icon: Icon(
-          Icons.timer_off_outlined,
-          color: controller.isCounterEnabled ? Colors.white : AppTheme.functionActiveColor,
-          size: 18
-        ),
+        onPressed: () => controller.windowNotifier.setShowOpacitySlider(!controller.showOpacitySlider),
+        icon: const Icon(Icons.opacity, color: Colors.white, size: 18),
       ),
     ];
 
@@ -77,6 +77,13 @@ class TimerPage extends ConsumerWidget {
         backgroundColor: AppTheme.getBackgroundColor(controller.backgroundOpacity),
         body: Stack(
           children: [
+            //: Modo mini: Contador de vueltas
+            if(controller.isMini)
+              if(controller.getMaxCount() != null)
+                CounterWithLimit(controller: controller)
+              else
+                CounterWithoutLimit(controller: controller),
+
             Container(
               padding: controller.isExpanded ? EdgeInsets.zero : EdgeInsets.only(top: 10.0),
               color: AppTheme.getBackgroundColor(0),
@@ -87,7 +94,7 @@ class TimerPage extends ConsumerWidget {
                   if(controller.isExpanded)
                   CustomAppBar( actions: configButtons ),
 
-                  //: Control del slider de opacidad
+                  //: Opacidad: slider para ajustar la opacidad del fondo, solo visible en modo expandido y si el slider está activado
                   if(controller.isExpanded && controller.showOpacitySlider)
                   OpacitySlider(
                     backgroundOpacity: controller.backgroundOpacity,
@@ -129,12 +136,15 @@ class TimerPage extends ConsumerWidget {
                         if(controller.shouldShowCounterControl())
                         CounterPanel(
                           currentCount: controller.timerCounter,
+                          totalCount: controller.getMaxCount() ,
                           onIncrement: () => controller.timerNotifier.incrementCounter(),
                           onDecrement: () => controller.timerNotifier.decrementCounter(),
                           onReset: () => controller.timerNotifier.resetCounter(),
                           onMiniCounterPressed: () => controller.windowNotifier.setUseMiniCounter(!controller.useMiniCounter),
                           isMiniActive: controller.useMiniCounter,
                           showExtraControls: controller.isExpanded,
+                          maxCountController: controller.maxCountController,
+                          onMaxCountChanged: (value) => controller.updateMaxCount(value),
                         ),
                     
                       ],
@@ -144,8 +154,10 @@ class TimerPage extends ConsumerWidget {
               ),
             ),
 
+            //: Botón para cambiar entre los temporizadores disponibles (1 y 2), solo visible si hay un segundo temporizador
             if(controller.shouldShowSecondTimerControl())
             ChangeTimerButton(
+              isMini: controller.isMini,
               currentTimerIndex: controller.currentTimerIndex,
               onPressed: () => controller.timerNotifier.switchTimer(controller.currentTimerIndex == 0 ? 1 : 0),
             ),
@@ -158,6 +170,7 @@ class TimerPage extends ConsumerWidget {
 
 
 
+///: Controladores de tiempo (horas, minutos, segundos) para el temporizador
 class _NewTimeControllers extends StatelessWidget {
   const _NewTimeControllers({
     required this.currentTimer,
@@ -204,3 +217,4 @@ class _NewTimeControllers extends StatelessWidget {
     );
   }
 }
+//!+ Fin widgets auxiliares

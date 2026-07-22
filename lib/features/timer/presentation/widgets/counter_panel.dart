@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:timer/constants/app_sizes.dart';
 import 'package:timer/core/theme/app_theme.dart';
 
@@ -12,6 +13,8 @@ class CounterPanel extends StatelessWidget {
   final VoidCallback? onMiniCounterPressed;
   final bool isMiniActive;
   final bool showExtraControls;
+  final TextEditingController? maxCountController;
+  final ValueChanged<String>? onMaxCountChanged;
   
    
   const CounterPanel({
@@ -24,6 +27,8 @@ class CounterPanel extends StatelessWidget {
     this.onReset,
     this.isMiniActive = false,
     this.onMiniCounterPressed,
+    this.maxCountController,
+    this.onMaxCountChanged,
   });
   
   @override
@@ -31,7 +36,7 @@ class CounterPanel extends StatelessWidget {
     return  Stack(
       children: [
         
-        //: Botón mini contador
+        //: Botón para activar el modo [mini contador]
         if(showExtraControls)
         Positioned(
           left: 10,
@@ -50,7 +55,7 @@ class CounterPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             
-            //: Disminuir el contador
+            //: Botón para disminuir el contador
             _ButtonContainer(
               child: IconButton(
                 onPressed: onDecrement,
@@ -63,7 +68,7 @@ class CounterPanel extends StatelessWidget {
 
             //: Mostrar el contador actual y el total (si se proporciona)
             Text(
-              totalCount != null
+              (totalCount != null && !showExtraControls)
                 ? '$currentCount / $totalCount'
                 : '$currentCount',
               style: const TextStyle(
@@ -71,9 +76,32 @@ class CounterPanel extends StatelessWidget {
               ),
             ),
         
-            const SizedBox(width: 10.0),
+            //: Espacio ingresar el maximo de vueltas, solo visible si se muestran los controles extra
+            if(showExtraControls) ...[
+              const SizedBox(width: 5.0),
+              Text( '/', style: const TextStyle( fontSize: AppTextSize.medium ) ),
+              SizedBox(
+                width: 40,
+                child: TextFormField(
+                  textAlign: TextAlign.center,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Max',
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+                  ),
+                  controller: maxCountController,
+                  onChanged: onMaxCountChanged,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                ),
+              ),
+            ],
 
-            //: Aumentar el contador
+            SizedBox(width: showExtraControls ? 3 : 10),
+
+            //: Botón para aumentar el contador
             _ButtonContainer(
               child: IconButton(
                 onPressed: onIncrement,
@@ -81,10 +109,12 @@ class CounterPanel extends StatelessWidget {
                 iconSize: AppIconSize.small,
               ),
             ),
+
           ],
         ),
 
-        //: Botón de reinicio
+
+        //: Botón para reiniciar el contador
         if(showExtraControls)
         Positioned(
           right: 10,
@@ -105,6 +135,7 @@ class CounterPanel extends StatelessWidget {
 
 
 
+/// Contenedor para los botones del panel de control del contador, con un estilo consistente
 class _ButtonContainer extends StatelessWidget {
 
   final Widget child;

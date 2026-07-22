@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:timer/features/timer/presentation/providers/timer.provider.dart';
 import 'package:timer/utils/time_formatter.dart';
@@ -26,8 +27,12 @@ class TimerPageController {
   late double backgroundOpacity;
   late int currentTimerIndex;
   late int secondTimerTime;
-  // Formateo del tiempo en segundos a un formato legible
+
+  //: Formateo del tiempo en segundos a un formato legible
   late String tiempoFormateado;
+
+  //: Controlador del texto del campo de entrada del contador máximo
+  final TextEditingController maxCountController = TextEditingController();
 
   final WidgetRef ref;
   //!+ Fin variables
@@ -56,6 +61,8 @@ class TimerPageController {
     currentTimerIndex  = ref.watch(timerProvider.select((s) => s.currentTimerIndex));
     secondTimerTime    = ref.watch(timerProvider.select((s) => s.timesInSeconds[1]));
 
+    maxCountController.text = ref.watch(timerProvider.select((s) => s.counterLimit.toString()));
+
     tiempoFormateado = TimeFormatter.formatSeconds(totalTimeInSeconds);
   }
 
@@ -63,23 +70,27 @@ class TimerPageController {
 
   //+ Funciones
   ///: Cambia el tamaño de la ventana entre expandido y compacto
-  void toggleSize() {
-    windowNotifier.setWindowState(
-      isExpanded 
-      ? !isCounterEnabled 
-        ? WindowSizeState.compactWithoutCounter 
-        : WindowSizeState.compact
-      : WindowSizeState.expanded,
-    );
+  void toggleSize() { 
+    if(!isExpanded) {
+      windowNotifier.setWindowState(WindowSizeState.expanded);
+      return;
+    }
+
+    if(isExpanded && !useMiniCounter) {
+      windowNotifier.setWindowState(
+        !isCounterEnabled 
+          ? WindowSizeState.compactWithoutCounter 
+          : WindowSizeState.compact
+      );
+    } else if(useMiniCounter) {
+      windowNotifier.setWindowState(WindowSizeState.mini);
+    }
   }
 
 
   ///: Reinicia el temporizador
-  void resetTimer() {
-    timerNotifier.reset();
-    if(isExpanded) return;
-    windowNotifier.setWindowState(WindowSizeState.compact);
-  }
+  void resetTimer() => timerNotifier.reset();
+  
 
 
   ///: Inicia o pausa el temporizador
@@ -88,11 +99,13 @@ class TimerPageController {
 
     if(isExpanded) return;
 
-    if (useMiniCounter && !isTimerRunning) {
+    if (useMiniCounter) {
       await windowNotifier.setWindowState(WindowSizeState.mini);
-    } else if (useMiniCounter && isTimerRunning) {
-      await windowNotifier.setWindowState(WindowSizeState.compact);
+      return;
     }
+    
+    await windowNotifier.setWindowState(WindowSizeState.compact);
+    
   }
 
 
@@ -117,12 +130,42 @@ class TimerPageController {
 
   ///: Mostrar u ocultar el control del segundo temporizador
   bool shouldShowSecondTimerControl() {
-    if(isMini) return false;
+
+    if(isMini && secondTimerTime != 0) return true;
     if(isExpanded) return false;
 
-    if(secondTimerTime == 0) return false;
+    return false;
+  }
 
-    return true;
+
+  ///: Actualizar el número máximo de vueltas/clics del contador
+  void updateMaxCount(String value) {
+    int? maxCount = int.tryParse(value);
+    if(maxCount == null) return;
+
+    timerNotifier.setMaxCount(maxCount);
+  }
+
+
+  ///: Obtener el número máximo de vueltas/clics del contador
+  int? getMaxCount() {
+    int? maxCount = int.tryParse(maxCountController.text);
+
+    if(maxCount == null) return null;
+    if(maxCount <= 0) return null;
+
+    return maxCount;
+  }
+
+
+  ///: Modo mini: mostrar el contador
+  String getMiniCounterText() {
+    if(!useMiniCounter) return '';
+
+    int? maxCount = getMaxCount();
+
+    if(maxCount == null) return '$timerCounter';
+    return '$timerCounter / $maxCount';
   }
   //!+ Fin funciones
 }

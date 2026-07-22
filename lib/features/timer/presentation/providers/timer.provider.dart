@@ -74,6 +74,7 @@ class TimerNotifier extends Notifier<TimerState> {
       isCounterEnabled: state.isCounterEnabled,
       timesInSeconds: state.timesInSeconds,
       currentTimerIndex: state.currentTimerIndex,
+      counterLimit: state.counterLimit,
     );
   }
 
@@ -137,6 +138,12 @@ class TimerNotifier extends Notifier<TimerState> {
   ///: Activar / desactivar el uso del contador de clics/vueltas
   void toggleUseCounter() {
     state = state.copyWith(isCounterEnabled: !state.isCounterEnabled);
+  }
+
+
+  ///: Establece un nuevo valor máximo para el contador de clics/vueltas
+  void setMaxCount(int maxCount) {
+    state = state.copyWith(counterLimit: maxCount);
   }
   //!+ Fin contador de clics/vueltas
 
