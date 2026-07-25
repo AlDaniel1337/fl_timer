@@ -17,9 +17,8 @@ class ChangeTimerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: isMini ? -5 : 3,
-      left: isMini ? null : 3,
-      right: isMini ? 3 : null,
+      top: isMini ? -5 : 2,
+      right: 3,
       child: IconButton(
         onPressed: onPressed,
         icon: Icon(

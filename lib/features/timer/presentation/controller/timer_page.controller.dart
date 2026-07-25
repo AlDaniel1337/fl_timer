@@ -89,7 +89,13 @@ class TimerPageController {
 
 
   ///: Reinicia el temporizador
-  void resetTimer() => timerNotifier.reset();
+  void resetTimer() {
+    if(isTimerRunning && shouldShowSecondTimerControl()) {
+      timerNotifier.switchTimer(currentTimerIndex == 0 ? 1 : 0);
+    } else {
+      timerNotifier.reset();
+    }
+  }
   
 
 
@@ -107,10 +113,6 @@ class TimerPageController {
     await windowNotifier.setWindowState(WindowSizeState.compact);
     
   }
-
-
-  ///: Cambia el temporizador seleccionado (1, 2)
-  void switchTimer(int timerNumber) => timerNotifier.switchTimer(timerNumber);
   
 
 
@@ -131,8 +133,8 @@ class TimerPageController {
   ///: Mostrar u ocultar el control del segundo temporizador
   bool shouldShowSecondTimerControl() {
 
-    if(isMini && secondTimerTime != 0) return true;
     if(isExpanded) return false;
+    if(secondTimerTime != 0) return true;
 
     return false;
   }

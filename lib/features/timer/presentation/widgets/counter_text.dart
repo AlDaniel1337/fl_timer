@@ -6,7 +6,7 @@ class CounterText extends StatelessWidget {
   const CounterText({
     super.key,
     required this.controller,
-    this.fontSize = 20.0,
+    this.fontSize = 18.0,
   });
 
   final TimerPageController controller;
@@ -18,7 +18,7 @@ class CounterText extends StatelessWidget {
       controller.getMiniCounterText(),
       style: TextStyle(
         fontSize: fontSize,
-        color: const Color.fromARGB(50, 253, 250, 203),
+        color: const Color.fromARGB(150, 255, 255, 255),
         fontWeight: FontWeight.bold
       ),
     );

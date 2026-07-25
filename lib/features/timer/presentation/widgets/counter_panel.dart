@@ -91,7 +91,11 @@ class CounterPanel extends StatelessWidget {
                     contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                   ),
                   controller: maxCountController,
-                  onChanged: onMaxCountChanged,
+                  onTapOutside: (_) {
+                    if (onMaxCountChanged != null) {
+                      onMaxCountChanged!(maxCountController?.text ?? '0');
+                    }
+                  },
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
