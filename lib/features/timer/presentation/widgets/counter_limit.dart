@@ -15,7 +15,7 @@ class CounterWithLimit extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top: 0,
-      left: 10,
+      left: 15,
       child: CounterText(controller: controller),
     );
   }

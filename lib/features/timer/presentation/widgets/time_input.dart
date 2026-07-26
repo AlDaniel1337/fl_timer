@@ -63,7 +63,7 @@ class _Content extends StatelessWidget {
       ),
       child: Row(
         children: [
-          //: Texto que muestra el valor actual del input
+          //: Campo de texto para ingresar el valor
           Expanded(
             child: _TextField(
               onChanged: (text) {
@@ -104,6 +104,7 @@ class _Content extends StatelessWidget {
 
 
 
+///: Campo de texto personalizado para ingresar el valor del tiempo
 class _TextField extends StatelessWidget {
 
   final Function(String) onChanged;
@@ -139,6 +140,13 @@ class _TextField extends StatelessWidget {
           contentPadding: EdgeInsets.zero,
         ),
         onChanged: onChanged,
+        onTap: () {
+          // Selecciona todo el texto al hacer clic en el campo de texto
+          controller.selection = TextSelection(
+            baseOffset: 0, 
+            extentOffset: controller.text.length
+          );
+        },
       ),
     );
   }

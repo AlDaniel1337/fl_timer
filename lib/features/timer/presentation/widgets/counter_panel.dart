@@ -36,7 +36,7 @@ class CounterPanel extends StatelessWidget {
     return  Stack(
       children: [
         
-        //: Botón para activar el modo [mini contador]
+        //: Botón: activar el modo [mini contador]
         if(showExtraControls)
         Positioned(
           left: 10,
@@ -55,7 +55,7 @@ class CounterPanel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             
-            //: Botón para disminuir el contador
+            //: Botón: disminuir el contador
             _ButtonContainer(
               child: IconButton(
                 onPressed: onDecrement,
@@ -99,13 +99,20 @@ class CounterPanel extends StatelessWidget {
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
                   ],
+                  onTap: () {
+                    // Selecciona todo el texto al hacer clic en el campo de texto
+                    maxCountController?.selection = TextSelection(
+                      baseOffset: 0, 
+                      extentOffset: maxCountController?.text.length ?? 0
+                    );
+                  },
                 ),
               ),
             ],
 
             SizedBox(width: showExtraControls ? 3 : 10),
 
-            //: Botón para aumentar el contador
+            //: Botón: aumentar el contador
             _ButtonContainer(
               child: IconButton(
                 onPressed: onIncrement,
@@ -118,7 +125,7 @@ class CounterPanel extends StatelessWidget {
         ),
 
 
-        //: Botón para reiniciar el contador
+        //: Botón: reiniciar el contador
         if(showExtraControls)
         Positioned(
           right: 10,

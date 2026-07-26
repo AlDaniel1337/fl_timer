@@ -78,8 +78,10 @@ class TimerPage extends ConsumerWidget {
         body: Stack(
           children: [
             //: Modo mini: Contador de vueltas
-            if(controller.isMini)
-              CounterWithLimit(controller: controller),
+            if(controller.isMini && controller.shouldShowCounterControl())
+              CounterWithLimit(
+                controller: controller,
+              ),
 
             Container(
               padding: controller.isExpanded ? EdgeInsets.zero : EdgeInsets.only(top: 10.0),
@@ -185,9 +187,11 @@ class _NewTimeControllers extends StatelessWidget {
         TimeInput(
           value: currentTimer ~/ 3600,
           onChanged: (value){
+            // Tomar solo los últimos dos dígitos del valor ingresado para horas
+            int newValue = value % 100; 
             timerNotifier.updateTiempo(
               minutos: (currentTimer % 3600) ~/ 60,
-              horas: value,
+              horas: newValue,
               segundos: currentTimer % 60
             );
           },
@@ -195,20 +199,30 @@ class _NewTimeControllers extends StatelessWidget {
         const SizedBox(width: 8.0),
         TimeInput(
           value: (currentTimer % 3600) ~/ 60,
-          onChanged: (value) => timerNotifier.updateTiempo(
-            horas: currentTimer ~/ 3600,
-            minutos: value,
-            segundos: currentTimer % 60
-          ),
+          onChanged: (value) {
+
+            int newValue = value % 100; 
+
+            timerNotifier.updateTiempo(
+              horas: currentTimer ~/ 3600,
+              minutos: newValue,
+              segundos: currentTimer % 60
+            );
+          }
         ),
         const SizedBox(width: 8.0),
         TimeInput(
           value: currentTimer % 60,
-          onChanged: (value) => timerNotifier.updateTiempo(
-            horas: currentTimer ~/ 3600,
-            minutos: (currentTimer % 3600) ~/ 60,
-            segundos: value
-          ),
+          onChanged: (value){
+
+            int newValue = value % 100;
+
+            timerNotifier.updateTiempo(
+              horas: currentTimer ~/ 3600,
+              minutos: (currentTimer % 3600) ~/ 60,
+              segundos: newValue
+            );
+          }
         ),
       ],
     );
