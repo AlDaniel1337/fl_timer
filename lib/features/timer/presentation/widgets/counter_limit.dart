@@ -20,24 +20,3 @@ class CounterWithLimit extends StatelessWidget {
     );
   }
 }
-
-
-///: Contenedor central para el contador de vueltas/clics en modo mini
-class CounterWithoutLimit extends StatelessWidget {
-  const CounterWithoutLimit({
-    super.key,
-    required this.controller,
-  });
-
-  final TimerPageController controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: CounterText(
-        controller: controller,
-        fontSize: 64.0,
-      ),
-    );
-  }
-}

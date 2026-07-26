@@ -79,10 +79,7 @@ class TimerPage extends ConsumerWidget {
           children: [
             //: Modo mini: Contador de vueltas
             if(controller.isMini)
-              if(controller.getMaxCount() != null)
-                CounterWithLimit(controller: controller)
-              else
-                CounterWithoutLimit(controller: controller),
+              CounterWithLimit(controller: controller),
 
             Container(
               padding: controller.isExpanded ? EdgeInsets.zero : EdgeInsets.only(top: 10.0),
