@@ -120,10 +120,10 @@ class TimerPageController {
   void toggleUseCounter() => timerNotifier.toggleUseCounter();
 
 
-  ///: Mostrat u ocultar el control del contador
+  ///: Mostrar u ocultar el control del contador
   bool shouldShowCounterControl() {
 
-    if(isMini) return false;
+    if(isMini ) return false;
     if(!isCounterEnabled && !isExpanded) return false;
 
     return true;

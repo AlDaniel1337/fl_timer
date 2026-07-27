@@ -92,9 +92,7 @@ class CounterPanel extends StatelessWidget {
                   ),
                   controller: maxCountController,
                   onTapOutside: (_) {
-                    if (onMaxCountChanged != null) {
-                      onMaxCountChanged!(maxCountController?.text ?? '0');
-                    }
+                    onMaxCountChanged!(maxCountController?.text ?? '0');
                   },
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -105,6 +103,11 @@ class CounterPanel extends StatelessWidget {
                       baseOffset: 0, 
                       extentOffset: maxCountController?.text.length ?? 0
                     );
+                  },
+                  onChanged:(value) {
+                    if(onMaxCountChanged != null) {
+                      onMaxCountChanged!(value == '' ? '0' : value);
+                    }
                   },
                 ),
               ),

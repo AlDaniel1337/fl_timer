@@ -78,7 +78,7 @@ class TimerPage extends ConsumerWidget {
         body: Stack(
           children: [
             //: Modo mini: Contador de vueltas
-            if(controller.isMini && controller.shouldShowCounterControl())
+            if(controller.isMini && controller.isCounterEnabled)
               CounterWithLimit(
                 controller: controller,
               ),
@@ -136,8 +136,20 @@ class TimerPage extends ConsumerWidget {
                         CounterPanel(
                           currentCount: controller.timerCounter,
                           totalCount: controller.getMaxCount() ,
-                          onIncrement: () => controller.timerNotifier.incrementCounter(),
-                          onDecrement: () => controller.timerNotifier.decrementCounter(),
+                          onIncrement: () {
+                            if(controller.isExpanded){
+                              controller.timerNotifier.incrementMaxCounter();
+                            } else {
+                              controller.timerNotifier.incrementCounter();
+                            }
+                          },
+                          onDecrement: () {
+                            if(controller.isExpanded){
+                              controller.timerNotifier.decrementMaxCounter();
+                            } else {
+                              controller.timerNotifier.decrementCounter();
+                            }
+                          },
                           onReset: () => controller.timerNotifier.resetCounter(),
                           onMiniCounterPressed: () => controller.windowNotifier.setUseMiniCounter(!controller.useMiniCounter),
                           isMiniActive: controller.useMiniCounter,
